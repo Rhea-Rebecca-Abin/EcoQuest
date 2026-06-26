@@ -1,0 +1,256 @@
+/* ── Auth Layout ── */
+.auth-bg {
+  min-height: 100vh;
+  display: flex;
+  font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+}
+
+/* ── Left branding panel ── */
+.auth-left {
+  width: 420px;
+  flex-shrink: 0;
+  background: linear-gradient(165deg, #0f3d20 0%, #1a5c30 50%, #236b38 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+}
+
+.auth-left-content {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  max-width: 320px;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.auth-brand-logo {
+  flex-shrink: 0;
+}
+
+.auth-brand-name {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.auth-brand-sub {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.6);
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+.auth-hero-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  margin: 0 0 12px;
+}
+
+.auth-hero-body {
+  font-size: 0.93rem;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.auth-feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255,255,255,0.82);
+  font-size: 0.88rem;
+}
+
+.auth-feat-icon {
+  font-size: 1rem;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ── Right form panel ── */
+.auth-right {
+  flex: 1;
+  background: #f7f9f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.auth-card {
+  background: #ffffff;
+  border: 1px solid #d6e8d3;
+  border-radius: 20px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 2px 20px rgba(30,80,40,0.06);
+}
+
+.auth-card-header {
+  margin-bottom: 28px;
+}
+
+.auth-card-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f3d20;
+  margin: 0 0 8px;
+  letter-spacing: -0.3px;
+}
+
+.auth-card-sub {
+  font-size: 0.86rem;
+  color: #5a7a5c;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.auth-field-row {
+  display: flex;
+  gap: 12px;
+}
+
+.auth-field label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #3d6640;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.auth-field input {
+  background: #f4f8f2;
+  border: 1.5px solid #cde4c4;
+  border-radius: 10px;
+  padding: 11px 13px;
+  font-size: 0.93rem;
+  color: #0f3d20;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.15s, background 0.15s;
+  font-family: inherit;
+}
+
+.auth-field input:focus {
+  border-color: #2d7d46;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(45,125,70,0.08);
+}
+
+.auth-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.83rem;
+  color: #b91c1c;
+  line-height: 1.4;
+}
+
+.auth-submit {
+  margin-top: 4px;
+  background: #1a5c30;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 13px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s;
+  font-family: inherit;
+  letter-spacing: -0.1px;
+}
+
+.auth-submit:hover { background: #0f3d20; }
+.auth-submit:disabled { opacity: 0.55; cursor: default; }
+
+/* ── Divider ── */
+.auth-divider {
+  margin: 20px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #a0b8a2;
+  font-size: 0.78rem;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #daecd5;
+}
+
+.auth-toggle {
+  font-size: 0.85rem;
+  color: #5a7a5c;
+  text-align: center;
+  margin: 0 0 14px;
+}
+
+.auth-link {
+  background: none;
+  border: none;
+  color: #1a5c30;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+.auth-link:hover { color: #0f3d20; text-decoration: underline; }
+
+.auth-ibm-note {
+  text-align: center;
+  font-size: 0.76rem;
+  color: #8aab8c;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .auth-bg { flex-direction: column; }
+  .auth-left {
+    width: 100%;
+    padding: 32px 24px;
+  }
+  .auth-left-content { flex-direction: column; gap: 20px; }
+  .auth-hero-title { font-size: 1.6rem; }
+  .auth-card { padding: 28px 20px; }
+  .auth-field-row { flex-direction: column; }
+}
