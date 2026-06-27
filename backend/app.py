@@ -188,9 +188,16 @@ def create_action():
     if not name or not category:
         return jsonify({"error": "name and category required"}), 400
     db = get_db()
+    # Use the average points and CO₂ of existing actions in this category
+    avg = db.execute(
+        "SELECT AVG(points) as pts, AVG(co2_saved_kg) as co2 "
+        "FROM actions WHERE category=?", (category,)
+    ).fetchone()
+    pts = round(avg["pts"]) if avg["pts"] else 10
+    co2 = round(avg["co2"], 2) if avg["co2"] else 0.1
     cur = db.execute(
-        "INSERT INTO actions (name, category, points, co2_saved_kg) VALUES (?,?,10,0.1)",
-        (name, category),
+        "INSERT INTO actions (name, category, points, co2_saved_kg) VALUES (?,?,?,?)",
+        (name, category, pts, co2),
     )
     db.commit()
     row = db.execute("SELECT * FROM actions WHERE id=?", (cur.lastrowid,)).fetchone()
