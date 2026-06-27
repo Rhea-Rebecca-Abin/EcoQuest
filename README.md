@@ -105,7 +105,7 @@ ecoquest/
 | **Organisation Overview** | Total actions, total CO₂ saved, active users, and monthly target progress at a glance |
 | **ESG Category Breakdown** | Aggregated CO₂ savings mapped to five ESG reporting categories: Compute & Cloud, Desk & Device, Commute & Transport, Meetings & Collaboration, Office Consumables |
 | **CO₂ Trend Chart** | Month-by-month CO₂ reduction data ready for board-level sustainability reporting |
-| **Team Status Dashboard** | Per-team RAG (Red / Amber / Green) status against monthly CO₂ targets |
+| **Team Status Dashboard** | Per-team RAG (Red / Amber / Green) status against a monthly points target of 2,000 pts — sorted by teams needing the most attention first |
 | **Top Contributors** | Ranked list of highest-impact employees to recognise and reward sustainability champions |
 
 ---

@@ -330,7 +330,7 @@ export default function AdminDashboard({ user, onLogout }) {
             <div className="adm-card-header">
               <div>
                 <div className="adm-card-title">Team Status</div>
-                <div className="adm-card-sub">Monthly target: 5,000 pts per team · Sorted by teams needing attention first</div>
+                <div className="adm-card-sub">Monthly target: 2,000 pts per team · Sorted by teams needing attention first</div>
               </div>
               <div className="adm-legend">
                 {Object.entries(STATUS_META).map(([k, v]) => (

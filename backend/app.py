@@ -10,7 +10,7 @@ DB_PATH = "ecoquest.db"
 SEED_ACTIONS = [
     # Water
     ("Reusable water bottle",                                "Water",           10,  0.08),
-    ("Shorter shower",                                       "Water",            10,  0.05),
+    ("Report a leaking tap/fixture in the office",           "Water",            10,  0.05),
     # Transport
     ("Walk or cycle 2km+",                                   "Transport",        15,  0.40),
     ("Carpool or transit",                                   "Transport",        10,  0.25),
@@ -627,7 +627,7 @@ def admin_overview():
     days_in_month = (datetime.date(today.year, today.month % 12 + 1, 1) - datetime.timedelta(days=1)).day if today.month < 12 \
                     else 31
     elapsed   = today.day
-    MONTHLY_TARGET = 5000
+    MONTHLY_TARGET = 2000
 
     team_scores = db.execute(
         "SELECT u.team_name, COALESCE(SUM(l.points_earned),0) as pts "
@@ -659,7 +659,7 @@ def admin_team_status():
     days_in_month = (datetime.date(today.year, today.month % 12 + 1, 1) - datetime.timedelta(days=1)).day if today.month < 12 \
                     else 31
     elapsed = today.day
-    MONTHLY_TARGET = 5000
+    MONTHLY_TARGET = 2000
     expected = MONTHLY_TARGET * (elapsed / days_in_month)
 
     rows = db.execute(
@@ -763,6 +763,8 @@ def admin_esg_summary():
         "total_last_month": total_last,
     })
 
-if __name__ == "__main__":
+with app.app_context():
     init_db()
+
+if __name__ == "__main__":
     app.run(debug=True, port=5000)
