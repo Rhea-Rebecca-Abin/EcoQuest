@@ -507,6 +507,7 @@ def leaderboard():
         f"SELECT u.username, u.team_name, COALESCE(SUM(l.points_earned),0) as total_pts, "
         f"COALESCE(SUM(l.co2_earned),0) as total_co2 "
         f"FROM users u LEFT JOIN logs l ON l.user_id=u.id {date_filter} "
+        f"WHERE u.role != 'admin' "
         f"GROUP BY u.id ORDER BY total_pts DESC LIMIT 10"
     ).fetchall()
     return jsonify([dict(r) for r in rows])
@@ -526,7 +527,7 @@ def leaderboard_teams():
         f"SELECT u.team_name, COALESCE(SUM(l.points_earned),0) as total_pts, "
         f"COALESCE(SUM(l.co2_earned),0) as total_co2, COUNT(DISTINCT u.id) as member_count "
         f"FROM users u LEFT JOIN logs l ON l.user_id=u.id "
-        f"WHERE u.team_name != '' {date_filter} "
+        f"WHERE u.team_name != '' AND u.role != 'admin' {date_filter} "
         f"GROUP BY u.team_name ORDER BY total_pts DESC LIMIT 10"
     ).fetchall()
     return jsonify([dict(r) for r in rows])
