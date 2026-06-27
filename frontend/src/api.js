@@ -64,6 +64,31 @@ export async function fetchTeamSummary(team) {
   return r.json();
 }
 
+export async function fetchAdminOverview(userId) {
+  const r = await fetch(`${BASE}/admin/overview?user_id=${userId}`);
+  return r.json();
+}
+
+export async function fetchAdminTeamStatus(userId) {
+  const r = await fetch(`${BASE}/admin/team-status?user_id=${userId}`);
+  return r.json();
+}
+
+export async function fetchAdminEsgSummary(userId) {
+  const r = await fetch(`${BASE}/admin/esg-summary?user_id=${userId}`);
+  return r.json();
+}
+
+export async function fetchAdminCo2Trend(userId) {
+  const r = await fetch(`${BASE}/admin/co2-trend?user_id=${userId}`);
+  return r.json();
+}
+
+export async function fetchAdminTopContributors(userId) {
+  const r = await fetch(`${BASE}/admin/top-contributors?user_id=${userId}`);
+  return r.json();
+}
+
 export async function logAction(userId, actionId, isMission) {
   const r = await fetch(`${BASE}/log`, {
     method: "POST",

@@ -111,6 +111,18 @@ def init_db():
             "INSERT INTO actions (name, category, points, co2_saved_kg) VALUES (?,?,?,?)",
             SEED_ACTIONS,
         )
+
+    # Seed admin account if not present
+    ADMIN_EMAIL = "admin.ecoquest@ibm.com"
+    ADMIN_PASS  = "GreenPlanet2025!"
+    if not db.execute("SELECT id FROM users WHERE username=?", (ADMIN_EMAIL,)).fetchone():
+        hashed = bcrypt.hashpw(ADMIN_PASS.encode(), bcrypt.gensalt()).decode()
+        db.execute(
+            "INSERT INTO users (username, password_hash, role, team_name, product_name, organization) "
+            "VALUES (?,?,'admin','Admin','IBM EcoQuest','IBM Sustainability')",
+            (ADMIN_EMAIL, hashed),
+        )
+
     db.commit()
     db.close()
 
@@ -518,6 +530,237 @@ def leaderboard_teams():
         f"GROUP BY u.team_name ORDER BY total_pts DESC LIMIT 10"
     ).fetchall()
     return jsonify([dict(r) for r in rows])
+
+# ── Admin co2 trend ──────────────────────────────────────────────────────────
+
+@app.get("/admin/co2-trend")
+def admin_co2_trend():
+    if require_admin() != "admin":
+        return jsonify({"error": "Forbidden"}), 403
+    db = get_db()
+    # Last 6 calendar months including current
+    today = datetime.date.today()
+    months = []
+    for i in range(5, -1, -1):
+        # Go back i months from current
+        year  = today.year
+        month = today.month - i
+        while month <= 0:
+            month += 12
+            year  -= 1
+        months.append((year, month))
+
+    result = []
+    for year, month in months:
+        ym = f"{year:04d}-{month:02d}"
+        row = db.execute(
+            "SELECT COALESCE(SUM(co2_earned),0) as co2, COUNT(DISTINCT user_id) as active "
+            "FROM logs WHERE strftime('%Y-%m', timestamp) = ?", (ym,)
+        ).fetchone()
+        result.append({
+            "month":  ym,
+            "label":  datetime.date(year, month, 1).strftime("%b %Y"),
+            "co2":    round(row["co2"], 2),
+            "active": row["active"],
+        })
+    return jsonify(result)
+
+# ── Admin top contributors ────────────────────────────────────────────────────
+
+@app.get("/admin/top-contributors")
+def admin_top_contributors():
+    if require_admin() != "admin":
+        return jsonify({"error": "Forbidden"}), 403
+    db = get_db()
+    rows = db.execute(
+        "SELECT u.username, u.team_name, "
+        "COALESCE(SUM(l.points_earned),0) as pts, "
+        "COALESCE(SUM(l.co2_earned),0) as co2, "
+        "COUNT(l.id) as actions "
+        "FROM users u LEFT JOIN logs l ON l.user_id=u.id "
+        "AND strftime('%Y-%m', l.timestamp) = strftime('%Y-%m', 'now') "
+        "WHERE u.role != 'admin' "
+        "GROUP BY u.id ORDER BY pts DESC LIMIT 5"
+    ).fetchall()
+    return jsonify([{
+        "username":  r["username"],
+        "team_name": r["team_name"] or "",
+        "pts":       r["pts"],
+        "co2":       round(r["co2"], 2),
+        "actions":   r["actions"],
+    } for r in rows])
+
+# ── Admin helpers ─────────────────────────────────────────────────────────────
+
+def require_admin():
+    """Return the requesting user's role, or None if not an admin."""
+    user_id = request.args.get("user_id") or (request.get_json(silent=True) or {}).get("user_id")
+    if not user_id:
+        return None
+    db = get_db()
+    row = db.execute("SELECT role FROM users WHERE id=?", (user_id,)).fetchone()
+    return row["role"] if row else None
+
+# ── Admin overview ────────────────────────────────────────────────────────────
+
+@app.get("/admin/overview")
+def admin_overview():
+    if require_admin() != "admin":
+        return jsonify({"error": "Forbidden"}), 403
+    db = get_db()
+
+    # CO2 saved month-to-date
+    total_co2 = db.execute(
+        "SELECT COALESCE(SUM(co2_earned),0) FROM logs "
+        "WHERE strftime('%Y-%m', timestamp) = strftime('%Y-%m', 'now')"
+    ).fetchone()[0]
+
+    # Active employees this month
+    active_emp = db.execute(
+        "SELECT COUNT(DISTINCT user_id) FROM logs "
+        "WHERE strftime('%Y-%m', timestamp) = strftime('%Y-%m', 'now')"
+    ).fetchone()[0]
+
+    # Teams on track
+    today     = datetime.date.today()
+    days_in_month = (datetime.date(today.year, today.month % 12 + 1, 1) - datetime.timedelta(days=1)).day if today.month < 12 \
+                    else 31
+    elapsed   = today.day
+    MONTHLY_TARGET = 5000
+
+    team_scores = db.execute(
+        "SELECT u.team_name, COALESCE(SUM(l.points_earned),0) as pts "
+        "FROM users u LEFT JOIN logs l ON l.user_id=u.id "
+        "AND strftime('%Y-%m', l.timestamp) = strftime('%Y-%m', 'now') "
+        "WHERE u.team_name != '' AND u.role != 'admin' "
+        "GROUP BY u.team_name"
+    ).fetchall()
+
+    expected = MONTHLY_TARGET * (elapsed / days_in_month)
+    on_track  = sum(1 for t in team_scores if t["pts"] >= expected)
+
+    return jsonify({
+        "total_co2_mtd":      round(total_co2, 2),
+        "active_employees":   active_emp,
+        "teams_on_track":     on_track,
+        "total_teams":        len(team_scores),
+    })
+
+# ── Admin team status ─────────────────────────────────────────────────────────
+
+@app.get("/admin/team-status")
+def admin_team_status():
+    if require_admin() != "admin":
+        return jsonify({"error": "Forbidden"}), 403
+    db = get_db()
+
+    today = datetime.date.today()
+    days_in_month = (datetime.date(today.year, today.month % 12 + 1, 1) - datetime.timedelta(days=1)).day if today.month < 12 \
+                    else 31
+    elapsed = today.day
+    MONTHLY_TARGET = 5000
+    expected = MONTHLY_TARGET * (elapsed / days_in_month)
+
+    rows = db.execute(
+        "SELECT u.team_name, COALESCE(SUM(l.points_earned),0) as score, "
+        "COUNT(DISTINCT u.id) as member_count "
+        "FROM users u LEFT JOIN logs l ON l.user_id=u.id "
+        "AND strftime('%Y-%m', l.timestamp) = strftime('%Y-%m', 'now') "
+        "WHERE u.team_name != '' AND u.role != 'admin' "
+        "GROUP BY u.team_name"
+    ).fetchall()
+
+    STATUS_ORDER = {"red": 0, "amber": 1, "green": 2}
+    result = []
+    for r in rows:
+        score = r["score"]
+        if score >= expected:
+            status = "green"
+        elif score >= expected * 0.8:
+            status = "amber"
+        else:
+            status = "red"
+        result.append({
+            "team_name":     r["team_name"],
+            "score":         score,
+            "monthly_target": MONTHLY_TARGET,
+            "expected":      round(expected),
+            "member_count":  r["member_count"],
+            "status":        status,
+        })
+
+    result.sort(key=lambda x: STATUS_ORDER[x["status"]])
+    return jsonify(result)
+
+# ── Admin ESG summary ─────────────────────────────────────────────────────────
+
+# Map action categories to ESG reporting categories
+ESG_CAT_MAP = {
+    "Compute":   "Compute & Cloud",
+    "Energy":    "Desk & Device",
+    "Transport": "Commute & Transport",
+    "Meetings":  "Meetings & Collaboration",
+    "Food":      "Office Consumables",
+    "Waste":     "Office Consumables",
+    "Water":     "Office Consumables",
+}
+
+@app.get("/admin/esg-summary")
+def admin_esg_summary():
+    if require_admin() != "admin":
+        return jsonify({"error": "Forbidden"}), 403
+    db = get_db()
+
+    def fetch_period(year_month):
+        rows = db.execute(
+            "SELECT a.category, COALESCE(SUM(l.co2_earned),0) as co2 "
+            "FROM logs l JOIN actions a ON a.id=l.action_id "
+            "WHERE strftime('%Y-%m', l.timestamp) = ? "
+            "GROUP BY a.category", (year_month,)
+        ).fetchall()
+        # Aggregate into ESG categories
+        totals = {}
+        for r in rows:
+            esg = ESG_CAT_MAP.get(r["category"], r["category"])
+            totals[esg] = round(totals.get(esg, 0) + r["co2"], 2)
+        return totals
+
+    today = datetime.date.today()
+    this_month = today.strftime("%Y-%m")
+    # Last month
+    first_of_month = today.replace(day=1)
+    last_month_date = first_of_month - datetime.timedelta(days=1)
+    last_month = last_month_date.strftime("%Y-%m")
+
+    this_data = fetch_period(this_month)
+    last_data = fetch_period(last_month)
+
+    ESG_CATS = ["Compute & Cloud", "Desk & Device", "Commute & Transport",
+                "Meetings & Collaboration", "Office Consumables"]
+
+    result = []
+    for cat in ESG_CATS:
+        this_val = this_data.get(cat, 0)
+        last_val = last_data.get(cat, 0)
+        if last_val > 0:
+            change_pct = round(((this_val - last_val) / last_val) * 100, 1)
+        else:
+            change_pct = None
+        result.append({
+            "category":   cat,
+            "this_month": round(this_val, 2),
+            "last_month": round(last_val, 2),
+            "change_pct": change_pct,
+        })
+
+    total_this = round(sum(r["this_month"] for r in result), 2)
+    total_last = round(sum(r["last_month"] for r in result), 2)
+
+    return jsonify({
+        "categories": result,
+        "total_this_month": total_this,
+        "total_last_month": total_last,
+    })
 
 if __name__ == "__main__":
     init_db()

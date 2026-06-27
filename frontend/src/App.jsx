@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Auth from "./Auth";
 import Dashboard from "./Dashboard";
+import AdminDashboard from "./AdminDashboard";
 
 class Boundary extends React.Component {
   constructor(props) {
@@ -51,7 +52,9 @@ export default function App() {
     <Boundary>
       {!user
         ? <Auth onAuth={handleAuth} />
-        : <Dashboard user={user} onLogout={handleLogout} />
+        : user.role === "admin"
+          ? <AdminDashboard user={user} onLogout={handleLogout} />
+          : <Dashboard user={user} onLogout={handleLogout} />
       }
     </Boundary>
   );

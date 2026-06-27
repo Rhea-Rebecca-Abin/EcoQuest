@@ -1,0 +1,638 @@
+/* ── AdminDashboard — distinct layout, same nature palette ── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+.adm-layout {
+  min-height: 100vh;
+  background: #f0f5f1;
+  font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+  color: #1e3320;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Top bar ── */
+.adm-topbar {
+  background: #ffffff;
+  border-bottom: 1px solid #d6e8d3;
+  padding: 0 32px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.adm-topbar-left,
+.adm-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.adm-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adm-logo-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f3d20;
+  letter-spacing: -0.2px;
+  line-height: 1.2;
+}
+
+.adm-logo-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #ffffff;
+  background: #1a5c30;
+  border-radius: 4px;
+  padding: 2px 6px;
+  line-height: 1;
+}
+
+.adm-refresh-note {
+  font-size: 0.74rem;
+  color: #8aab8c;
+}
+
+.adm-refresh-btn {
+  background: #f0f5f1;
+  border: 1px solid #cde4c4;
+  border-radius: 6px;
+  color: #2d7d46;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.adm-refresh-btn:hover { background: #e0f0e3; }
+
+.adm-admin-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #f0f5f1;
+  border: 1px solid #cde4c4;
+  border-radius: 99px;
+  padding: 5px 12px 5px 9px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1e3320;
+}
+
+.adm-admin-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2d7d46;
+  flex-shrink: 0;
+}
+
+.adm-logout {
+  background: none;
+  border: 1px solid #cde4c4;
+  border-radius: 6px;
+  color: #5a7a5c;
+  font-size: 0.75rem;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s, color 0.15s;
+}
+.adm-logout:hover { border-color: #2d7d46; color: #2d7d46; }
+
+/* ── Page heading ── */
+.adm-page-head {
+  padding: 28px 32px 0;
+}
+
+.adm-page-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f3d20;
+  margin: 0 0 4px;
+  letter-spacing: -0.4px;
+}
+
+.adm-page-sub {
+  font-size: 0.84rem;
+  color: #5a7a5c;
+  margin: 0;
+}
+
+.adm-loading {
+  padding: 60px 32px;
+  font-size: 0.9rem;
+  color: #8aab8c;
+  text-align: center;
+}
+
+/* ── Body grid ── */
+.adm-body {
+  padding: 24px 32px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* ── Stat cards ── */
+.adm-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.adm-stat {
+  background: #ffffff;
+  border: 1.5px solid #cde4c4;
+  border-radius: 16px;
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.adm-stat-hl {
+  border-color: #2d7d46;
+  background: #f4fbf5;
+}
+
+.adm-stat-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.adm-stat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.adm-stat-label {
+  font-size: 0.7rem;
+  color: #5a7a5c;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 600;
+}
+
+.adm-stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f3d20;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.adm-stat-sub {
+  font-size: 0.72rem;
+  color: #8aab8c;
+}
+
+/* ── Generic card ── */
+.adm-card {
+  background: #ffffff;
+  border: 1.5px solid #cde4c4;
+  border-radius: 16px;
+  padding: 22px 24px;
+}
+
+.adm-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.adm-card-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f3d20;
+  margin-bottom: 3px;
+  letter-spacing: -0.1px;
+}
+
+.adm-card-sub {
+  font-size: 0.78rem;
+  color: #8aab8c;
+  line-height: 1.5;
+}
+
+.adm-empty {
+  font-size: 0.84rem;
+  color: #8aab8c;
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── Legend ── */
+.adm-legend {
+  display: flex;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.adm-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  color: #5a7a5c;
+  font-weight: 500;
+}
+
+.adm-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Team list ── */
+.adm-team-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.adm-team-row {
+  display: grid;
+  grid-template-columns: 220px 1fr 52px 100px;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 10px;
+  border-radius: 10px;
+  transition: background 0.12s;
+}
+.adm-team-row:hover { background: #f7faf7; }
+
+.adm-team-name-col {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.adm-team-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.adm-team-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e3320;
+  display: block;
+}
+
+.adm-team-members {
+  font-size: 0.7rem;
+  color: #8aab8c;
+  display: block;
+  margin-top: 1px;
+}
+
+.adm-team-progress-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.adm-prog-wrap {
+  height: 8px;
+  background: #eef5eb;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.adm-prog-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.adm-team-prog-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: #8aab8c;
+}
+
+.adm-team-prog-target { color: #adc4af; }
+
+.adm-team-pct-col { text-align: center; }
+
+.adm-team-pct {
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.adm-team-badge-col { text-align: right; }
+
+.adm-status-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 99px;
+  padding: 4px 12px;
+  white-space: nowrap;
+}
+
+/* ── ESG Summary ── */
+.adm-esg-totals {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.adm-esg-total-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f3d20;
+  letter-spacing: -0.4px;
+}
+
+.adm-esg-total-label {
+  font-size: 0.72rem;
+  color: #8aab8c;
+}
+
+.adm-esg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.adm-esg-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.adm-esg-icon {
+  font-size: 1.3rem;
+  width: 26px;
+  text-align: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.adm-esg-info {
+  flex: 1;
+}
+
+.adm-esg-name-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.adm-esg-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e3320;
+}
+
+.adm-esg-change {
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 99px;
+  padding: 2px 9px;
+}
+.adm-esg-change.up      { background: #e6f4e8; color: #1a5c30; }
+.adm-esg-change.down    { background: #fef2f2; color: #b91c1c; }
+.adm-esg-change.neutral { background: #f0f5f1; color: #5a7a5c; }
+
+.adm-esg-bar-wrap {
+  height: 8px;
+  background: #eef5eb;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.adm-esg-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2d7d46, #7de89e);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.adm-esg-vals {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+}
+
+.adm-esg-this {
+  font-weight: 600;
+  color: #2d7d46;
+}
+
+.adm-esg-last {
+  color: #adc4af;
+}
+
+/* ── Footer ── */
+.adm-footer {
+  text-align: center;
+  font-size: 0.72rem;
+  color: #adc4af;
+  padding: 20px 32px;
+  border-top: 1px solid #e5ede6;
+  margin-top: auto;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .adm-stats-row { grid-template-columns: 1fr 1fr; }
+  .adm-team-row  { grid-template-columns: 1fr 1fr; row-gap: 8px; }
+  .adm-team-pct-col, .adm-team-badge-col { text-align: left; }
+}
+
+@media (max-width: 600px) {
+  .adm-topbar  { padding: 0 16px; }
+  .adm-page-head, .adm-body { padding-left: 16px; padding-right: 16px; }
+  .adm-stats-row { grid-template-columns: 1fr; }
+  .adm-team-row  { grid-template-columns: 1fr; }
+  .adm-legend    { display: none; }
+  .adm-refresh-note { display: none; }
+}
+
+/* ── Mid 2-col grid (trend + contributors) ── */
+.adm-mid-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+/* ── Trend chart ── */
+.adm-trend-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 8px;
+}
+
+.adm-trend-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #eef5eb;
+}
+
+.adm-trend-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 99px;
+  padding: 3px 10px;
+  flex-shrink: 0;
+}
+.adm-trend-badge.up   { background: #e6f4e8; color: #1a5c30; }
+.adm-trend-badge.down { background: #fef2f2; color: #b91c1c; }
+
+.adm-trend-note {
+  font-size: 0.76rem;
+  color: #8aab8c;
+}
+
+/* ── Top contributors ── */
+.adm-contrib-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.adm-contrib-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 8px;
+  border-radius: 8px;
+  transition: background 0.12s;
+}
+.adm-contrib-row:hover { background: #f7faf7; }
+
+.adm-contrib-rank {
+  font-size: 1rem;
+  width: 26px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.adm-rank-num {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #8aab8c;
+}
+
+.adm-contrib-av {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.adm-contrib-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.adm-contrib-name {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #1e3320;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adm-contrib-team {
+  font-size: 0.68rem;
+  color: #8aab8c;
+}
+
+.adm-contrib-vals {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.adm-contrib-pts {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #2d7d46;
+}
+
+.adm-contrib-co2 {
+  font-size: 0.68rem;
+  color: #8aab8c;
+}
+
+.adm-contrib-actions {
+  font-size: 0.65rem;
+  color: #adc4af;
+}
+
+/* ── ESG header right (totals + export) ── */
+.adm-esg-header-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+/* ── Export button ── */
+.adm-export-btn {
+  background: #1a5c30;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.18s;
+  white-space: nowrap;
+}
+.adm-export-btn:hover:not(:disabled) { background: #0f3d20; }
+.adm-export-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* ── Responsive additions ── */
+@media (max-width: 900px) {
+  .adm-mid-grid { grid-template-columns: 1fr; }
+}
