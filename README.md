@@ -207,4 +207,4 @@ The admin view shows the ESG dashboard, CO₂ trend, team RAG status, and top co
 
 ## License
 
-This project was built as part of a hackathon and is intended for **learning and development purposes only**. It is not an official IBM product or offering.
+This project was built as part of the AI game Blazing sevens and is intended for **learning and development purposes only**. It is not an official IBM product or offering.
